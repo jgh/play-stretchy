@@ -1,0 +1,4 @@
+play-stretchy
+=============
+
+Playful elasticsearch
