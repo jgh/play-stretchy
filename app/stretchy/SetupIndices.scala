@@ -18,8 +18,9 @@ class SetupIndices(config:Configuration, client:Client) {
 
   val log = Logger("application." + this.getClass.getSimpleName)
   def execute() {
-    val indices = config.getConfigList("elasticsearch.indicies").get
-    indices.foreach(processIndex)
+    config.getConfigList("elasticsearch.indicies").foreach(indicies =>  {
+       indicies.foreach(processIndex)
+    })
   }
 
   def processIndex(config:Configuration)  {
