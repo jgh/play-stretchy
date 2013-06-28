@@ -1,0 +1,71 @@
+@(queryString:Option[String], searchResponse:org.elasticsearch.action.search.SearchResponse)
+@import org.elasticsearch.search.SearchHit
+@import org.joda.time.format.DateTimeFormat
+@import org.joda.time.DateTime
+
+@main("Search") {
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li><a href="#Search"><i class="icon-chevron-right"></i> Search</a></li>
+                    <li><a href="#Add"><i class="icon-chevron-right"></i> Add</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            <section id="Search">
+                <h2>Search</h2>
+                <form class="form-inline" action="@routes.Application.index(queryString)" method="get">
+                    <div class="input-append" class="span9"/>
+                    <input type="text" placeholder="search" class="span10" name="q" width="100%"
+                           style="height:35px;  font-size:20px" value="@queryString.getOrElse("")"/>
+                    <button type="submit" class="btn searchInput" height="45px"><i class="icon-search"></i></button>
+                </form>
+                <span>Returning  @searchResponse.getHits.hits.length of @searchResponse.getHits.getTotalHits</span>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for(e <- searchResponse.getHits.hits) {
+                    <tr>
+                        <td>@e.getId()</td>
+                        <td>@optionalField(e ,"name")</td>
+                        <td>@optionalField(e ,"description")</td>
+                    </tr>
+                    }
+                    </tbody>
+                </table>
+            </section>
+            <section id="Add">
+                <h2>Add</h2>
+
+                <form method="post" action="@routes.Application.add">
+                    <label>Name</label>
+                    <input type="text" class="span9"/>
+                    <label>Description</label>
+                    <textarea rows="20" id="description" class="span9"></textarea>
+                    <br/>
+                    <button type="submit" class="btn">Submit</button>
+                </form>
+
+            </section>
+        </div>
+    </div>
+</div>
+}
+
+
+@optionalField(hit: SearchHit,  fieldName:String)  =  {
+@defining(hit.field(fieldName) ) { field =>
+@if(field  !=  null)  {
+@field.getValue
+}  else  {}
+}
+}
