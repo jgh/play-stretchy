@@ -1,0 +1,17 @@
+@(form:Form[(String, String)])
+@import helper.twitterBootstrap._
+
+@main("Add")  {
+    <h2>Add</h2>
+    @helper.form(action = routes.Application.add) {
+
+    @helper.inputText(form("name"))
+    @helper.textarea(form("description"))
+
+    <br/>
+    <button type="submit" class="btn">Submit</button>
+    }
+
+}
+
+

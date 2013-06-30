@@ -17,10 +17,10 @@ object Application extends Controller {
     )
   )
 
-  def index(q: Option[String]) = Action {
-    val queryString = q.filterNot(_.trim.isEmpty)
+  def index(q: Option[String]) = Action  { implicit  request  =>
+    q.filterNot(_.trim.isEmpty).map(queryString  =>  {
       val searchResponse = ES.execute(client => {
-        val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
+        val query = QueryBuilders.queryString(queryString)
         client.prepareSearch("stuff")
           .addFields("name",  "description")
           .setQuery(query)
@@ -28,30 +28,48 @@ object Application extends Controller {
       })
       Async {
         searchResponse.map(results => {
-          Ok(views.html.index(queryString, results))
+          Ok(views.html.index(q, results ))
         })
       }
+
+    }).getOrElse(
+      Ok(views.html.index(q, null ))
+    )
   }
+
+  def addForm = Action   {implicit request =>
+     Ok(views.html.add(thingForm.fill(("test", "test"))))
+  }
+
   def add = Action   {implicit request =>
 
-    val form = thingForm.bindFromRequest()
+    val form: Form[(String, String)] = thingForm.bindFromRequest()
     println(form)
-    val (name, description) = form.get
+//    val (name, description) = form.get
 
-    ES.execute(client => {
+    form.bindFromRequest.fold(
+      formWithErrors => // binding failure, you retrieve the form containing errors,
+        BadRequest(views.html.add(formWithErrors)),
+      value =>  {
 
-        val entry = Json.obj(
-          "name" -> name,
-          "description" -> description
-        )
+        val (name, description) = value
+        ES.execute(client => {
 
-        println("indexing: " + name)
-        client.prepareIndex()
-          .setIndex("stuff")
-          .setType("thingy")
-          .setSource(Json.stringify(entry))
+          val entry = Json.obj(
+            "name" -> name,
+            "description" -> description
+          )
+
+          println("indexing: " + name)
+          client.prepareIndex()
+            .setIndex("stuff")
+            .setType("thingy")
+            .setSource(Json.stringify(entry))
+        })
+        println("Added")
+        Redirect(routes.Application.index(None)).flashing(("message" ->  "Added  '%s' thing".format(name)))
       })
 
-    Redirect(routes.Application.index(None))
+      }
+
   }
-}
