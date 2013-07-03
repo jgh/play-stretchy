@@ -40,7 +40,6 @@ class SetupIndices(config:Configuration, client:Client) {
       val mapping =  mappings.getConfig(key).get.underlying.root().render(ConfigRenderOptions.concise())
 
       val  source  = "{%s: %s}".format(key,mapping)
-      println("Mapping:  "  +  source)
       client.admin().indices().preparePutMapping(indexName).setType(key).setSource(source).execute().actionGet().isAcknowledged
       logInfo(indexName,"Created  a mapping  for  type %s".format( key))
     })

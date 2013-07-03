@@ -13,7 +13,7 @@ This is a plugin for Play 2.1, enabling support for [ElasticSearch](http://www.e
 
 ```
  val appDependencies = Seq(
-      "play-stretchy" %% "play-stretchy" % "1.0"
+      "play-stretchy" %% "play-stretchy" % "0.0.1"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
