@@ -16,7 +16,7 @@ This is a plugin for Play 2.1, enabling support for [ElasticSearch](http://www.e
       "play-stretchy" %% "play-stretchy" % "0.0.1"
     )
 
-    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
+    val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
       resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
     )
 ```
