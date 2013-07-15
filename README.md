@@ -65,7 +65,7 @@ This will create a new local node that holds data. It will also drop and recreat
 This is  all you  need to start  indexing  and searching stuff.   Elasticsearch will automatically create mappings  for the  objects you index based  on the
  first  document  this  is  indexed.  To  define  these mappings yourself  see TODO: mappings.  By default to index  will be stored in  the  'data' subdirectory  of the project directory.
 
-See TODO: client config  for  how to connect  to existing  elasticsearch nodes
+See TODO: [Client Configuration]   for  how to connect  to existing  elasticsearch nodes
 
 ### Play2 controller sample
 
@@ -100,3 +100,10 @@ Add  to  routes:
 ```
 GET     /                    controllers.Application.index(q:Option[String])
 ```
+
+## JSON
+
+## ClientConfiguration
+TODO
+## IndexMappings
+TODO
