@@ -8,7 +8,7 @@ goal is simply to make the API easier to use in a  Play environment.
 ## Main features
 
  * Configure ES client connection in Play config
- * Configure index mapping in Play config
+ * Configure index mappings in Play config
  * Bridge ES and play futures to allow the  use of Async for ES results
 
 
@@ -60,14 +60,12 @@ elasticsearch  =  {
    ]
 }
 ```
-This will create a new local node that holds data. It will also drop and recreate a 'stuff' index on startup.
+This will create a new local node that holds data. It will also drop and recreate a 'stuff' index on startup/reload.
 
 This is  all you  need to start  indexing  and searching stuff.   Elasticsearch will automatically create mappings  for the  objects you index to  define  these
-mappings yourself  see TODO: mappings
+mappings yourself  see TODO: mappings.  By default to index  will be stored in  the  'data' subdirectory  of the project directory.
 
-
-See TODO: client config  for  how to connect  to
-existing  elasticsearch nodes
+See TODO: client config  for  how to connect  to existing  elasticsearch nodes
 
 .### Play2 controller sample
 
