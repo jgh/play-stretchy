@@ -76,7 +76,7 @@ object Application extends Controller {
 
       }
 
-  def fieldValues(environment:String, field:String) = Action {
+  def fieldValues(field:String) = Action {
     import play.api.libs.json._
     import stretchy.XContentJson._
 
