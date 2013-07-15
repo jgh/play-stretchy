@@ -101,7 +101,22 @@ Add  to  routes:
 GET     /                    controllers.Application.index(q:Option[String])
 ```
 
-## <a href="#JSON"/> JSON
+The final step is to use the Play templating framework to render the search results.
+
+## JSON
+You can transform ES responses into Play Json objects.
+
+Import the implicit Writes object
+```
+import stretchy.XContentJson._
+```
+
+Call Json.toJson
+```
+val  searchResponse =  ES.execute(client => {...})
+val json =  Json.toJson(results)
+```
+You  now have a Play JSON object you can use with the JSON API or return as a  result.
 
 ## Client Configuration
 TODO
