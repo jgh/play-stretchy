@@ -8,6 +8,8 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
 import play.api.data._
 import play.api.data.Forms._
+import org.elasticsearch.search.facet.FacetBuilders
+import org.elasticsearch.search.facet.terms.TermsFacet
 
 object Application extends Controller {
   val thingForm = Form(
@@ -17,11 +19,13 @@ object Application extends Controller {
     )
   )
 
+  val indexName = "stuff"
+
   def index(q: Option[String]) = Action  { implicit  request  =>
     q.filterNot(_.trim.isEmpty).map(queryString  =>  {
       val searchResponse = ES.execute(client => {
         val query = QueryBuilders.queryString(queryString)
-        client.prepareSearch("stuff")
+        client.prepareSearch(indexName)
           .addFields("name",  "description")
           .setQuery(query)
           .setSize(20)
@@ -62,7 +66,7 @@ object Application extends Controller {
 
           println("indexing: " + name)
           client.prepareIndex()
-            .setIndex("stuff")
+            .setIndex(indexName)
             .setType("thingy")
             .setSource(Json.stringify(entry))
         })
@@ -72,4 +76,32 @@ object Application extends Controller {
 
       }
 
+  def fieldValues(environment:String, field:String) = Action {
+    import play.api.libs.json._
+    import stretchy.XContentJson._
+
+      val  searchResponse =  ES.execute(client => {
+        val facet  = FacetBuilders.termsFacet("field-stats")
+          .field(field)
+          .allTerms(true)
+          .order(TermsFacet.ComparatorType.TERM)
+          .global(true)
+
+        client.prepareSearch(indexName)
+          .setQuery( QueryBuilders.matchAllQuery())
+          .setSize(0)
+          .addFacet(facet)
+      })
+      Async {
+        searchResponse.map(results => {
+          val json =  Json.toJson(results)
+          val jsonTransformer = (__ \ 'facets \ "field-stats" \ "terms" ).json.pick
+
+          json.transform(jsonTransformer).fold(
+            valid = ( result => Ok(result) ),
+            invalid = ( e => BadRequest(e.toString) )
+          )
+        })
+      }
+  }
   }

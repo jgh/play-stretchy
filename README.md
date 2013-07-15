@@ -2,7 +2,14 @@
 
 This is a plugin for Play 2.1, enabling support for [ElasticSearch](http://www.elasticsearch.org)
 
+Elasticsearch already has an extensive  java api. This plugin does not attempt to replicate the existing API its
+goal is simply to make the API easier to use in a  Play environment.
+
 ## Main features
+
+ * Configure ES client connection in Play config
+ * Configure index mapping in Play config
+ * Bridge ES and play futures to allow the  use of Async for ES results
 
 
 ## Getting Started
@@ -44,12 +51,25 @@ elasticsearch  =  {
          data:true
      }
    }
+   indicies:  [
+   {
+       name: stuff
+       deleteIndex: true
+       createIndex: true
+   }
+   ]
 }
 ```
-This will create a new local node that holds data. This is  all you  need to start  indexing  and searching. See XXX  for  how to connect  to
-existing  elasticsearch nodes.
+This will create a new local node that holds data. It will also drop and recreate a 'stuff' index on startup.
 
-### Play2 controller sample
+This is  all you  need to start  indexing  and searching stuff.   Elasticsearch will automatically create mappings  for the  objects you index to  define  these
+mappings yourself  see TODO: mappings
+
+
+See TODO: client config  for  how to connect  to
+existing  elasticsearch nodes
+
+.### Play2 controller sample
 
 ```
 package controllers

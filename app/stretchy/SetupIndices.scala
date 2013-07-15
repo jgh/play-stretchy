@@ -13,18 +13,19 @@ import collection.JavaConversions._
  * @param config
  * @param client
  */
-class SetupIndices(config:Configuration, client:Client) {
+class SetupIndices(config: Configuration, client: Client) {
   //todo: Switch to plain config  so  can be used from akka
 
   val log = Logger("application." + this.getClass.getSimpleName)
+
   def execute() {
-    config.getConfigList("elasticsearch.indicies").foreach(indicies =>  {
-       indicies.foreach(processIndex)
+    config.getConfigList("elasticsearch.indicies").foreach(indicies => {
+      indicies.foreach(processIndex)
     })
   }
 
-  def processIndex(config:Configuration)  {
-    val  indexName = config.getString("name").get
+  def processIndex(config: Configuration) {
+    val indexName = config.getString("name").get
     if (config.getBoolean("deleteIndex").getOrElse(false)) {
       deleteIndex(indexName)
     }
@@ -35,16 +36,13 @@ class SetupIndices(config:Configuration, client:Client) {
 
 
     val mappings = config.getConfig("mappings").get
-    mappings.subKeys.foreach(key =>{
-//      val mapping = mappings.underlying.root().render(ConfigRenderOptions.concise())
-      val mapping =  mappings.getConfig(key).get.underlying.root().render(ConfigRenderOptions.concise())
+    mappings.subKeys.foreach(key => {
+      val mapping = mappings.getConfig(key).get.underlying.root().render(ConfigRenderOptions.concise())
 
-      val  source  = "{%s: %s}".format(key,mapping)
+      val source = "{%s: %s}".format(key, mapping)
       client.admin().indices().preparePutMapping(indexName).setType(key).setSource(source).execute().actionGet().isAcknowledged
-      logInfo(indexName,"Created  a mapping  for  type %s".format( key))
+      logInfo(indexName, "Created  a mapping  for  type %s".format(key))
     })
-//    println("mappings:  "  + mappings.underlying.root().render())
-//    client.admin().indices().preparePutMapping(indexName).setType(logType).setSource(Json.stringify(logMapping)).executeActionRequest().actionGet().isAcknowledged
   }
 
 
@@ -59,12 +57,12 @@ class SetupIndices(config:Configuration, client:Client) {
           .put("number_of_shards", 1)
           .put("index.numberOfReplicas", 1))
         .execute().actionGet()
-      logInfo(indexName,"Created.")
+      logInfo(indexName, "Created.")
 
 
     } catch {
       case e: IndexAlreadyExistsException => {
-        logInfo(indexName,"Index  was  already  created.")
+        logInfo(indexName, "Index  was  already  created.")
       }
     }
   }
@@ -72,14 +70,14 @@ class SetupIndices(config:Configuration, client:Client) {
   def deleteIndex(indexName: String) {
     try {
       client.admin().indices().prepareDelete(indexName).execute().get()
-      logInfo(indexName,"Deleted.")
+      logInfo(indexName, "Deleted.")
     } catch {
       case e: IndexMissingException => {
-        logInfo(indexName,"Index doesn't  exist")
+        logInfo(indexName, "Index doesn't  exist")
       }
       case e: Exception => {
-        logInfo(indexName,"Error occurred deleting  index")
-        log.info("",e)
+        logInfo(indexName, "Error occurred deleting  index")
+        log.info("", e)
       }
     }
   }
