@@ -62,12 +62,12 @@ elasticsearch  =  {
 ```
 This will create a new local node that holds data. It will also drop and recreate a 'stuff' index on startup/reload.
 
-This is  all you  need to start  indexing  and searching stuff.   Elasticsearch will automatically create mappings  for the  objects you index to  define  these
-mappings yourself  see TODO: mappings.  By default to index  will be stored in  the  'data' subdirectory  of the project directory.
+This is  all you  need to start  indexing  and searching stuff.   Elasticsearch will automatically create mappings  for the  objects you index based  on the
+ first  document  this  is  indexed.  To  define  these mappings yourself  see TODO: mappings.  By default to index  will be stored in  the  'data' subdirectory  of the project directory.
 
 See TODO: client config  for  how to connect  to existing  elasticsearch nodes
 
-.### Play2 controller sample
+### Play2 controller sample
 
 ```
 package controllers
@@ -96,5 +96,7 @@ object Application extends Controller {
   }
 }
 ```
-
-
+Add  to  routes:
+```
+GET     /                    controllers.Application.index(q:Option[String])
+```
