@@ -251,12 +251,15 @@ This is useful if you need to inspect the indices.
 Examples:
 
 Run a query
-http://localhost:9200/_all/_search?pretty=true&q=test
+
+`http://localhost:9200/_all/_search?pretty=true&q=test`
 
 View nodes info
-http://localhost:9200/_nodes/?all=true&pretty=true
+
+`http://localhost:9200/_nodes/?all=true&pretty=true`
 
 View mappings
-http://localhost:9200/_all/_mapping?pretty=true
+
+`http://localhost:9200/_all/_mapping?pretty=true`
 
 TODO:  How  to  turn  off?
