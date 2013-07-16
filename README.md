@@ -206,3 +206,39 @@ elasticsearch = {
 *  
 
 ### Type Mappings
+
+In  each  element of  the indicies array  you can define a mappings field. This field contains a JSON object. Stretchy will  loop through  each  field of  the  mappings object and  make  a  request to  the  put  mapping api  (http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping/).  The  name  of the  field  is  used  as  the type  to  create a  mapping  for.  A  JSON object is created  contain only the  single  field and  this  object is  passed to ES as the  source of a  PutMappingRequest. See  http://www.elasticsearch.org/guide/reference/mapping/  for mapping  details.
+
+
+```
+elasticsearch  =  {
+   client {...}
+   indicies:  [
+   {
+       name: stuff
+       mappings  {
+          "thing" : {
+            "properties" : {
+              "name" : {
+                "type" : "string",
+              },
+              "description" : {
+                "type" : "string",
+              }
+            }
+          },
+          "anotherthing" : {
+            "properties" : {
+              "size" : {
+                "type" : "string",
+              },
+              "colour" : {
+                "type" : "string",
+              }
+            }
+          }
+        }
+    }]
+
+}
+```
