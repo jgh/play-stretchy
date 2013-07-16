@@ -149,10 +149,10 @@ elasticsearch = {
   }
  },
 ```
-*clusterName* - Name of  cluster. Defaults to 'elasticsearch'.
-*local* - true means this node will be local to the Play JVM it will not attempt to join a  cluster.
-*data * - true to store data on this node.
-*settings* - additional properties to pass to the elasticsearch when it creates the node.
+* **clusterName** - Name of  cluster. Defaults to 'elasticsearch'.
+* **local** - true means this node will be local to the Play JVM it will not attempt to join a  cluster.
+* **data** - true to store data on this node.
+* **settings** - additional properties to pass to the elasticsearch when it creates the node.
 
 ### Transport Client
 Transport Client will connect to a elastic search cluster running on other servers.
