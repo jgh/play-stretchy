@@ -130,10 +130,9 @@ You now have a Play JSON object you can use with the JSON API or return as a res
 TODO
 Two types of clients can be configured Node and Transport. See the elastic search documentation for details.
 ### Node Client
-This client creates a local node in the Play JVM.
+This client creates a node in the Play JVM.
 
-This is the easiest way to get started using ES. It will create a fully functioning ES node that will index data and store
-it on the local filesystem.
+This is the easiest way to get started using ES. It can create a fully functioning ES node that will index data and store it on the local filesystem.
 
 ```
 elasticsearch = {
@@ -151,7 +150,7 @@ elasticsearch = {
 ```
 * **clusterName** - Name of  cluster. Defaults to 'elasticsearch'.
 * **local** - true means this node will be local to the Play JVM it will not attempt to join a  cluster.
-* **data** - true to store data on this node.
+* **data** - true to store data on this node. otherwise  operations will be delegated to other nodes in  the the 'clusterName' cluster.
 * **settings** - additional properties to pass to the elasticsearch when it creates the node.
 
 ### Transport Client
@@ -169,7 +168,7 @@ elasticsearch = {
  },
 ```
 
-* **clusterName** - Name of cluster. Defaults to 'elasticsearch'.
+* **clusterName** - Name of cluster to connect to. Defaults to 'elasticsearch'.
 * **transportAddresses** - A list of host:port strings defining the nodes this client should connect to.
 * **settings** - additional properties to pass to the elasticsearch when it creates the client.
 
@@ -179,6 +178,7 @@ Stretchy allows you to set up  the  indicies and  types  directly in  the  Play 
 
 ### Indicies
 
+Define the required  indicies as a json array under elasticsearch.
 ```
 elasticsearch = {
   client: {...},
@@ -199,5 +199,10 @@ elasticsearch = {
    ]
 }
 ```
+*  **name** - Name of  the   index.
+*  **deleteIndex** - stretchy  will delete  the index  everytime  the Play app  is restarted/reloaded.
+*  **createIndex** - The index  will  be  created each time the Play  app  is  restarted/reloaded.
+*  **mappings** -  defines the types for this index. See the next section.
+*  
 
 ### Type Mappings
