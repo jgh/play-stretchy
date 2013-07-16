@@ -169,63 +169,35 @@ elasticsearch = {
  },
 ```
 
-*clusterName* - Name of cluster. Defaults to 'elasticsearch'.
-*transportAddresses* - A list of host:port strings defining the nodes this client should connect to.
-*settings* - additional properties to pass to the elasticsearch when it creates the client.
+* **clusterName** - Name of cluster. Defaults to 'elasticsearch'.
+* **transportAddresses** - A list of host:port strings defining the nodes this client should connect to.
+* **settings** - additional properties to pass to the elasticsearch when it creates the client.
 
 ## Index Mappings
 TODO
 Stretchy allows you to set up  the  indicies and  types  directly in  the  Play config.
 
-### Indcies
+### Indicies
 
 ```
-
-   indicies:  [
+elasticsearch = {
+  client: {...},
+  indicies:  [
    {
-       name: osl
+       name: myindex
        deleteIndex: true
        createIndex: true
        mappings: ${logEntryMappings}
 
    },
    {
-       name: local
+       name: myotherindex
        deleteIndex: true
        createIndex: true
        mappings: ${logEntryMappings}
-
-   },
-   indicies:  [
-   {
-       name: osl
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
-
-   },
-   {
-       name: local
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
-
-   },
-   indicies:  [
-   {
-       name: osl
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
-
-   },
-   {
-       name: local
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
-
-   },
-
+   }
+   ]
+}
+```
 
 ### Type Mappings
