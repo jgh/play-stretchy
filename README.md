@@ -182,7 +182,7 @@ Define the required  indicies as a json array under elasticsearch.
 ```
 elasticsearch = {
   client: {...},
-  indicies:  [
+  indices:  [
    {
        name: myindex
        deleteIndex: true
@@ -200,10 +200,9 @@ elasticsearch = {
 }
 ```
 *  **name** - Name of  the   index.
-*  **deleteIndex** - stretchy  will delete  the index  everytime  the Play app  is restarted/reloaded.
+*  **deleteIndex** - This  index  will deleted  everytime  the Play app  is restarted/reloaded.
 *  **createIndex** - The index  will  be  created each time the Play  app  is  restarted/reloaded.
-*  **mappings** -  defines the types for this index. See the next section.
-*  
+*  **mappings** -  defines the type mappings for this index. See the next section.  Note we  have  use  Play config references  to  define our mappings  in  one  place  for  both  indices
 
 ### Type Mappings
 
