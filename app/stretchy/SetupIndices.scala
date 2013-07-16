@@ -8,7 +8,7 @@ import org.elasticsearch.indices.{IndexMissingException, IndexAlreadyExistsExcep
 import collection.JavaConversions._
 
 /**
- * Setups up indicies on the node  behind  client based  on  the  config.
+ * Setups up indices on the node based  on  the  config.
  * All calls  to ES  are   blocking
  * @param config
  * @param client
@@ -19,8 +19,8 @@ class SetupIndices(config: Configuration, client: Client) {
   val log = Logger("application." + this.getClass.getSimpleName)
 
   def execute() {
-    config.getConfigList("elasticsearch.indicies").foreach(indicies => {
-      indicies.foreach(processIndex)
+    config.getConfigList("elasticsearch.indices").foreach(index => {
+      index.foreach(processIndex)
     })
   }
 

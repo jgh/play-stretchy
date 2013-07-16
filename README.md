@@ -51,7 +51,7 @@ elasticsearch = {
    data:true
   }
  }
- indicies: [
+ indices: [
  {
   name: stuff
   deleteIndex: true
@@ -127,7 +127,6 @@ searchResponse.map(results => {
 You now have a Play JSON object you can use with the JSON API or return as a result.
 
 ## Client Configuration
-TODO
 Two types of clients can be configured Node and Transport. See the elastic search documentation for details.
 ### Node Client
 This client creates a node in the Play JVM.
@@ -173,12 +172,11 @@ elasticsearch = {
 * **settings** - additional properties to pass to the elasticsearch when it creates the client.
 
 ## Index Mappings
-TODO
-Stretchy allows you to set up  the  indicies and  types  directly in  the  Play config.
+Stretchy allows you to set up  the  indices and  types  directly in  the  Play config.
 
-### Indicies
+### Indices
 
-Define the required  indicies as a json array under elasticsearch.
+Define the required  indices as a json array under elasticsearch.
 ```
 elasticsearch = {
   client: {...},
@@ -206,13 +204,13 @@ elasticsearch = {
 
 ### Type Mappings
 
-In  each  element of  the indicies array  you can define a mappings field. This field contains a JSON object. Stretchy will  loop through  each  field of  the  mappings object and  make  a  request to  the  put  mapping api  (http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping/).  The  name  of the  field  is  used  as  the type  to  create a  mapping  for.  A  JSON object is created  contain only the  single  field and  this  object is  passed to ES as the  source of a  PutMappingRequest. See  http://www.elasticsearch.org/guide/reference/mapping/  for mapping  details.
+In  each  element of  the indices array  you can define a mappings field. This field contains a JSON object. Stretchy will  loop through  each  field of  the  mappings object and  make  a  request to  the  put  mapping api  (http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping/).  The  name  of the  field  is  used  as  the type  to  create a  mapping  for.  A  JSON object is created  contain only the  single  field and  this  object is  passed to ES as the  source of a  PutMappingRequest. See  http://www.elasticsearch.org/guide/reference/mapping/  for mapping  details.
 
 
 ```
 elasticsearch  =  {
    client {...}
-   indicies:  [
+   indices:  [
    {
        name: stuff
        mappings  {
