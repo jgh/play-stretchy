@@ -20,11 +20,11 @@ goal is simply to make the API easier to use in a Play environment.
 
 ```
  val appDependencies = Seq(
-  "play-stretchy" %% "play-stretchy" % "0.0.1"
+ "play-stretchy" %% "play-stretchy" % "0.0.1"
  )
 
  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-  resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
+ resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
  )
 ```
 
@@ -46,16 +46,16 @@ This plugin reads properties from the `application.conf` and gives you easy acce
 ```
 elasticsearch = {
  client {
-  node: {
-   local:true
-   data:true
-  }
+ node: {
+  local:true
+  data:true
+ }
  }
  indices: [
  {
-  name: stuff
-  deleteIndex: true
-  createIndex: true
+ name: stuff
+ deleteIndex: true
+ createIndex: true
  }
  ]
 }
@@ -82,23 +82,23 @@ object Application extends Controller {
 
  def index(q: Option[String]) = Action {
  val queryString = q.filterNot(_.trim.isEmpty)
-  val searchResponse = ES.execute(client => {
-  val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
-  client.prepareSearch("stuff")
-   .setQuery(query)
-   .setSize(20)
-  })
-  Async {
-  searchResponse.map(results => {
-   Ok(views.html.index(queryString, results))
-  })
-  }
+ val searchResponse = ES.execute(client => {
+ val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
+ client.prepareSearch("stuff")
+  .setQuery(query)
+  .setSize(20)
+ })
+ Async {
+ searchResponse.map(results => {
+  Ok(views.html.index(queryString, results))
+ })
+ }
  }
 }
 ```
 Add to routes:
 ```
-GET  /     controllers.Application.index(q:Option[String])
+GET /   controllers.Application.index(q:Option[String])
 ```
 
 The final step is to use the Play templating framework to render the search results.
@@ -127,7 +127,7 @@ searchResponse.map(results => {
 You now have a Play JSON object you can use with the JSON API or return as a result.
 
 ## Client Configuration
-Two types of clients can be configured Node and Transport. See the elastic search documentation for details.
+Two types of clients can be configured Node and Transport. See the elastic search [java client]((http://www.elasticsearch.org/guide/reference/java-api/client/) documentation for details.
 ### Node Client
 This client creates a node in the Play JVM.
 
@@ -137,19 +137,19 @@ This is the easiest way to get started using ES. It can create a fully functioni
 elasticsearch = {
 
  client {
-  clusterName: mycluster
-  node: {
-   local:true
-   data:true
-   settings: {
-   test.prop: true
-   }
+ clusterName: mycluster
+ node: {
+  local:true
+  data:true
+  settings: {
+  test.prop: true
   }
+ }
  },
 ```
-* **clusterName** - Name of  cluster. Defaults to 'elasticsearch'.
-* **local** - true means this node will be local to the Play JVM it will not attempt to join a  cluster.
-* **data** - true to store data on this node. otherwise  operations will be delegated to other nodes in  the the 'clusterName' cluster.
+* **clusterName** - Name of cluster. Defaults to 'elasticsearch'.
+* **local** - true means this node will be local to the Play JVM it will not attempt to join a cluster.
+* **data** - true to store data on this node. otherwise operations will be delegated to other nodes in the the 'clusterName' cluster.
 * **settings** - additional properties to pass to the elasticsearch when it creates the node.
 
 ### Transport Client
@@ -157,13 +157,13 @@ Transport Client will connect to a elastic search cluster running on other serve
 ```
 elasticsearch = {
  client {
-  clusterName: mycluster
-  transport: {
-  transportAddresses: ["jeremy-laptop:9300", "anotherserver:9300" ]
-  settings: {
-   test.prop: true
-  }
-  }
+ clusterName: mycluster
+ transport: {
+ transportAddresses: ["jeremy-laptop:9300", "anotherserver:9300" ]
+ settings: {
+  test.prop: true
+ }
+ }
  },
 ```
 
@@ -172,71 +172,91 @@ elasticsearch = {
 * **settings** - additional properties to pass to the elasticsearch when it creates the client.
 
 ## Index Mappings
-Stretchy allows you to set up  the  indices and  types  directly in  the  Play config.
+Stretchy allows you to set up the indices and types directly in the Play config.
 
 ### Indices
 
 
-Define the required  indices as a json array under elasticsearch.
+Define the required indices as a json array under elasticsearch.
 ```
 elasticsearch = {
-  client: {...},
-  indices:  [
-   {
-       name: myindex
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
+ client: {...},
+ indices: [
+  {
+    name: myindex
+    deleteIndex: true
+    createIndex: true
+    mappings: ${logEntryMappings}
 
-   },
-   {
-       name: myotherindex
-       deleteIndex: true
-       createIndex: true
-       mappings: ${logEntryMappings}
-   }
-   ]
+  },
+  {
+    name: myotherindex
+    deleteIndex: true
+    createIndex: true
+    mappings: ${logEntryMappings}
+  }
+  ]
 }
 ```
-*  **name** - Name of  the   index.
-*  **deleteIndex** - This  index  will deleted  everytime  the Play app  is restarted/reloaded.
-*  **createIndex** - The index  will  be  created each time the Play  app  is  restarted/reloaded.
-*  **mappings** -  defines the type mappings for this index. See the next section.  Note we  have  use  Play config references  to  define our mappings  in  one  place  for  both  indices
+* **name** - Name of the  index.
+* **deleteIndex** - This index will deleted everytime the Play app is restarted/reloaded.
+* **createIndex** - The index will be created each time the Play app is restarted/reloaded.
+* **mappings** - defines the type mappings for this index. See the next section. Note we have use Play config references to define our mappings in one place for both indices
 
 ### Type Mappings
 
-In  each  element of  the indices array  you can define a mappings field. This field contains a JSON object. Stretchy will  loop through  each  field of  the  mappings object and  make  a  request to  the  put  mapping api  (http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping/).  The  name  of the  field  is  used  as  the type  to  create a  mapping  for.  A  JSON object is created  contain only the  single  field and  this  object is  passed to ES as the  source of a  PutMappingRequest. See  http://www.elasticsearch.org/guide/reference/mapping/  for mapping  details.
+In each element of the indices array you can define a mappings field. This field contains a JSON object. Stretchy will loop through each field of the mappings object and make a request to the [put mapping api](http://www.elasticsearch.org/guide/reference/api/admin-indices-put-mapping/). The name of the field is used as the type to create a mapping for. A JSON object is created contain only the single field and this object is passed to ES as the source of a PutMappingRequest.
+See ES [mapping reference](http://www.elasticsearch.org/guide/reference/mapping/) for details.
 
 
 ```
-elasticsearch  =  {
-   client {...}
-   indices:  [
-   {
-       name: stuff
-       mappings  {
-          "thing" : {
-            "properties" : {
-              "name" : {
-                "type" : "string",
-              },
-              "description" : {
-                "type" : "string",
-              }
-            }
-          },
-          "anotherthing" : {
-            "properties" : {
-              "size" : {
-                "type" : "string",
-              },
-              "colour" : {
-                "type" : "string",
-              }
-            }
-          }
-        }
-    }]
+elasticsearch = {
+  client {...}
+  indices: [
+  {
+    name: stuff
+    mappings {
+     "thing" : {
+      "properties" : {
+       "name" : {
+        "type" : "string",
+       },
+       "description" : {
+        "type" : "string",
+       }
+      }
+     },
+     "anotherthing" : {
+      "properties" : {
+       "size" : {
+        "type" : "string",
+       },
+       "colour" : {
+        "type" : "string",
+       }
+      }
+     }
+    }
+  }]
 
 }
 ```
+
+## Rest Interface
+
+When you start a node ES will automatically start the rest interface on port 9200 (9201 if 9200 is already in use).
+
+This is useful if you need to inspect the indices.
+
+Examples:
+
+Run a query
+http://localhost:9200/_all/_search?pretty=true&q=test
+
+View nodes info
+http://localhost:9200/_nodes/?all=true&pretty=true
+
+View mappings
+http://localhost:9200/_all/_mapping?pretty=true
+
+TODO:  How  to  turn  off?
