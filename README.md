@@ -176,6 +176,7 @@ Stretchy allows you to set up  the  indices and  types  directly in  the  Play c
 
 ### Indices
 
+
 Define the required  indices as a json array under elasticsearch.
 ```
 elasticsearch = {
