@@ -96,7 +96,14 @@ object Application extends Controller {
  }
 }
 ```
-Add to routes:
+
+We  using  `ES.execute`  to  execute  an  action  against  ES. execute  takes  a  Client => ActionRequestBuilder  function.  The  client was configured
+in  the  application.conf.  You  use
+the  client  to prepare  a  ActionRequestBuilder.  All actions  you can  perform  against  ES  have  a builder  class  that  implements
+this  interface. execute  executes the action and  returns a  Future eventually containing the result.
+
+
+Add to routes  and  we  are done:
 ```
 GET /   controllers.Application.index(q:Option[String])
 ```
@@ -199,9 +206,9 @@ elasticsearch = {
 }
 ```
 * **name** - Name of the  index.
-* **deleteIndex** - This index will deleted everytime the Play app is restarted/reloaded.
+* **deleteIndex** - This index will deleted everytime the Play app is restarted/reloaded. Useful  for  dev  but  you probably  don't  want  to do  this  in  production.
 * **createIndex** - The index will be created each time the Play app is restarted/reloaded.
-* **mappings** - defines the type mappings for this index. See the next section. Note we have use Play config references to define our mappings in one place for both indices
+* **mappings** - defines the type mappings for this index. See the next section. Note we have used Play config references to define our mappings in one place for both indices
 
 ### Type Mappings
 
@@ -241,6 +248,8 @@ elasticsearch = {
 
 }
 ```
+
+*Note* This could  result  in  a error  if  ES  is  unable  to merge the mapping  with  the  mapping  in the  current index.
 
 ## Rest Interface
 
