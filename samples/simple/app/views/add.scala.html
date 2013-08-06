@@ -1,12 +1,13 @@
-@(form:Form[(String, String)])
+@(form:Form[Article])
 @import helper.twitterBootstrap._
 
 @main("Add")  {
     <h2>Add</h2>
     @helper.form(action = routes.Application.add) {
 
-    @helper.inputText(form("name"))
+    @helper.inputText(form("title"))
     @helper.textarea(form("description"))
+    @helper.textarea(form("content"))
 
     <br/>
     <button type="submit" class="btn">Submit</button>

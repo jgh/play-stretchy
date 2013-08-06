@@ -1,7 +1,8 @@
-@(queryString:Option[String], searchResponse:org.elasticsearch.action.search.SearchResponse)(implicit flash: Flash)
+@(queryString:Option[String], searchResponse:Option[org.elasticsearch.action.search.SearchResponse])(implicit flash: Flash)
 @import org.elasticsearch.search.SearchHit
 @import org.joda.time.format.DateTimeFormat
 @import org.joda.time.DateTime
+@import  stretchy.views._
 
 @main("Search") {
     @if(flash.get("message").isDefined) {
@@ -10,7 +11,7 @@
         <strong>@flash.get("message").get</strong>
     </div>
     }
-    <form class="form-inline" action="@routes.Application.index(queryString)" method="get">
+    <form class="form-inline" action="@routes.Application.search(queryString)" method="get">
         <div class="input-append span12">
         <input type="text" placeholder="search" class="span11" name="q" width="100%" height="45px"
                 value="@queryString.getOrElse("")" />
@@ -18,38 +19,37 @@
         </div>
     </form>
     <br/>
-    @if(searchResponse != null)  {
+    @defining(searchResponse.map(sr  =>  HitsViewHelper(sr)))  {maybeHits  =>
+      @maybeHits.map { hits  =>
         <p>
-    <span>Returning  @searchResponse.getHits.hits.length of @searchResponse.getHits.getTotalHits</span>
+           <span>Returning  @hits.searchResponse.getHits.hits.length of @hits.searchResponse.getHits.getTotalHits</span>
         </p>
-    }
-    <table class="table table-striped span12">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        @if(searchResponse != null)  {
-            @for(e <- searchResponse.getHits.hits) {
+        <table class="table table-striped span12">
+          <thead>
             <tr>
-                <td>@e.getId()</td>
-                <td>@optionalField(e ,"name")</td>
-                <td>@optionalField(e ,"description")</td>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Highlights</th>
             </tr>
-            }
-        }
-        </tbody>
-    </table>
-}
-
-
-@optionalField(hit: SearchHit,  fieldName:String)  =  {
-@defining(hit.field(fieldName) ) { field =>
-@if(field  !=  null)  {
-@field.getValue
-}  else  {}
-}
+            </thead>
+          <tbody>
+              @for(hit <- hits.hits) {
+              <tr>
+                <td><a  href="@routes.Application.article(hit.id)">@hit("title")</a> </td>
+                <td>@hit("author")</td>
+                <td>@hit.withHighlightFields  { (field, fragments) =>
+                  @for(frag <-  fragments) {
+                  <blockquote>
+                    <p>@frag</p>
+                    <small>From <cite title="@field">@field</cite></small>
+                  </blockquote>
+                  }
+                }
+                </td>
+              </tr>
+              }
+          </tbody>
+        </table>
+     }
+   }
 }

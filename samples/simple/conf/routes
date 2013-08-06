@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                    controllers.Application.index(q:Option[String])
+GET     /                    controllers.Application.search(q:Option[String])
+GET     /article/:id                    controllers.Application.article(id)
 POST    /add                    controllers.Application.add
 GET    /add                    controllers.Application.addForm
 GET    /values/:field                   controllers.Application.fieldValues(field:String)
