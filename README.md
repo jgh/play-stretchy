@@ -47,8 +47,8 @@ This plugin reads properties from the `application.conf` and gives you easy acce
 elasticsearch = {
  client {
  node: {
-  local:true
-  data:true
+ local:true
+ data:true
  }
  }
  indices: [
@@ -85,27 +85,27 @@ object Application extends Controller {
  val searchResponse = ES.execute(client => {
  val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
  client.prepareSearch("stuff")
-  .setQuery(query)
-  .setSize(20)
+ .setQuery(query)
+ .setSize(20)
  })
  Async {
  searchResponse.map(results => {
-  Ok(views.html.index(queryString, results))
+ Ok(views.html.index(queryString, results))
  })
  }
  }
 }
 ```
 
-We  using  `ES.execute`  to  execute  an  action  against  ES. execute  takes  a  Client => ActionRequestBuilder  function.  The  client was configured
-in  the  application.conf.  You  use
-the  client  to prepare  a  ActionRequestBuilder.  All actions  you can  perform  against  ES  have  a builder  class  that  implements
-this  interface. execute  executes the action and  returns a  Future eventually containing the result.
+We using `ES.execute` to execute an action against ES. execute takes a Client => ActionRequestBuilder function. The client was configured
+in the application.conf. You use
+the client to prepare a ActionRequestBuilder. All actions you can perform against ES have a builder class that implements
+this interface. execute executes the action and returns a Future eventually containing the result.
 
 
-Add to routes  and  we  are done:
+Add to routes and we are done:
 ```
-GET /   controllers.Application.index(q:Option[String])
+GET /  controllers.Application.index(q:Option[String])
 ```
 
 The final step is to use the Play templating framework to render the search results.
@@ -133,10 +133,33 @@ searchResponse.map(results => {
 ```
 You now have a Play JSON object you can use with the JSON API or return as a result.
 
+### JSON Writable
+If you simply want to proxy the ES server and return the ES response as JSON then use the XContentWriteable
+
+The following example uses Play content negotiation to return html or ES json based accept headers:
+```
+ES.execute(_.prepareGet(indexName, type, id)).map(rs => {
+ import stretchy.XContentWriteable._
+ render {
+  case Accepts.Html() => {
+   Ok(views.html.index(rs)
+  }
+  case Accepts.Json() => {
+   //This return the ES JSON
+   Ok(rs)
+  }
+ }
+}
+```
+## View Helper
+There is a stretchy.HitsViewHelper. This  wraps a SearchResponse  and  makes the  results easier to  use in  the Play HTML  templates.
+
+See  the  sample app  for examples.
+
 ## Client Configuration
 Two types of clients can be configured Node and Transport. See the elastic search [java client]((http://www.elasticsearch.org/guide/reference/java-api/client/) documentation for details.
 ### Node Client
-This client creates a node in the Play JVM.
+This client creates an node in the Play JVM.
 
 This is the easiest way to get started using ES. It can create a fully functioning ES node that will index data and store it on the local filesystem.
 
@@ -146,11 +169,11 @@ elasticsearch = {
  client {
  clusterName: mycluster
  node: {
-  local:true
-  data:true
-  settings: {
-  test.prop: true
-  }
+ local:true
+ data:true
+ settings: {
+ test.prop: true
+ }
  }
  },
 ```
@@ -168,7 +191,7 @@ elasticsearch = {
  transport: {
  transportAddresses: ["jeremy-laptop:9300", "anotherserver:9300" ]
  settings: {
-  test.prop: true
+ test.prop: true
  }
  }
  },
@@ -189,24 +212,24 @@ Define the required indices as a json array under elasticsearch.
 elasticsearch = {
  client: {...},
  indices: [
-  {
-    name: myindex
-    deleteIndex: true
-    createIndex: true
-    mappings: ${logEntryMappings}
+ {
+  name: myindex
+  deleteIndex: true
+  createIndex: true
+  mappings: ${logEntryMappings}
 
-  },
-  {
-    name: myotherindex
-    deleteIndex: true
-    createIndex: true
-    mappings: ${logEntryMappings}
-  }
-  ]
+ },
+ {
+  name: myotherindex
+  deleteIndex: true
+  createIndex: true
+  mappings: ${logEntryMappings}
+ }
+ ]
 }
 ```
-* **name** - Name of the  index.
-* **deleteIndex** - This index will deleted everytime the Play app is restarted/reloaded. Useful  for  dev  but  you probably  don't  want  to do  this  in  production.
+* **name** - Name of the index.
+* **deleteIndex** - This index will deleted everytime the Play app is restarted/reloaded. Useful for dev but you probably don't want to do this in production.
 * **createIndex** - The index will be created each time the Play app is restarted/reloaded.
 * **mappings** - defines the type mappings for this index. See the next section. Note we have used Play config references to define our mappings in one place for both indices
 
@@ -218,38 +241,48 @@ See ES [mapping reference](http://www.elasticsearch.org/guide/reference/mapping/
 
 ```
 elasticsearch = {
-  client {...}
-  indices: [
-  {
-    name: stuff
-    mappings {
-     "thing" : {
-      "properties" : {
-       "name" : {
-        "type" : "string",
-       },
-       "description" : {
-        "type" : "string",
-       }
-      }
-     },
-     "anotherthing" : {
-      "properties" : {
-       "size" : {
-        "type" : "string",
-       },
-       "colour" : {
-        "type" : "string",
-       }
-      }
-     }
+ client {...}
+ indices: [
+ {
+  name: stuff
+  mappings {
+   "thing" : {
+   "properties" : {
+    "name" : {
+    "type" : "string",
+    },
+    "description" : {
+    "type" : "string",
     }
-  }]
+   }
+   },
+   "anotherthing" : {
+   "properties" : {
+    "size" : {
+    "type" : "string",
+    },
+    "colour" : {
+    "type" : "string",
+    }
+   }
+   }
+  }
+ }]
 
 }
 ```
 
-*Note* This could  result  in  a error  if  ES  is  unable  to merge the mapping  with  the  mapping  in the  current index.
+*Note* This could result in a error if ES is unable to merge the mapping with the mapping in the current index.
+
+## ES  Plugins
+There is no  built  in  support for ES plugins  in a  local node.  Its  on the  the todo  list.
+
+If you  need  to   install  plugins so  they are used by the  local  node.  What  I have  done  is:
+* install a copy  of elastic  search
+* run  the plugin  command to install the  plugin into the installation.
+* Copy  the  plugin directory  into the  root directory of the play app
+
+For an example see the attachments mapper plugin in the simple sample app.
 
 ## Rest Interface
 
@@ -271,4 +304,17 @@ View mappings
 
 `http://localhost:9200/_all/_mapping?pretty=true`
 
-TODO:  How  to  turn  off?
+How to turn off? Set  the  http.enabled setting  to false
+```
+elasticsearch  =  {
+   client {
+     node: {
+         local:true
+         data:true
+         settings: {
+           http.enabled: false
+         }
+     }
+   }
+```
+
