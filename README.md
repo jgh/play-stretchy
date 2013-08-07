@@ -280,7 +280,7 @@ There is no  built  in  support for ES plugins  in a  local node.  Its  on the  
 If you  need  to   install  plugins so  they are used by the  local  node.  What  I have  done  is:
 * install a copy  of elastic  search
 * run  the plugin  command to install the  plugin into the installation.
-* Copy  the  plugin directory  into the  root directory of the play app
+* Copy  the  plugin directory from the  root directory of the ES  installation  into the  root directory of the play app
 
 For an example see the attachments mapper plugin in the simple sample app.
 
