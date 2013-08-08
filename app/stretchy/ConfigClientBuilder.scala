@@ -1,8 +1,7 @@
 package stretchy
 
 import play.api.{Logger, Configuration}
-import org.elasticsearch.node.Node
-import org.elasticsearch.common.settings.{Settings, ImmutableSettings}
+import org.elasticsearch.common.settings.ImmutableSettings
 import org.elasticsearch.client.transport.TransportClient
 import org.elasticsearch.client.Client
 import org.elasticsearch.common.transport.InetSocketTransportAddress
@@ -58,14 +57,24 @@ object ConfigClientBuilder {
   def buildNodeClient(client: Configuration, clusterName: Option[String]): (Client, () => Unit) = {
     val builder = nodeBuilder()
     client.getConfig("node").foreach(node => {
-      node.getBoolean("local").getOrElse(builder.local(_))
-      node.getBoolean("data").getOrElse(builder.local(_))
-      builder.settings(buildSettings(node.getConfig("settings")))
+      node.getBoolean("local").foreach(builder.local(_))
+      node.getBoolean("data").foreach(builder.data(_))
+      val loadConfig = node.getBoolean("loadConfigSettings")
+      loadConfig.foreach(builder.loadConfigSettings(_))
+
+      val settings = buildSettings(node.getConfig("settings")).build()
+
+//      val initialSettings = InternalSettingsPerparer.prepareSettings(settings, loadConfig.getOrElse(true) );
+//      val manager = new PluginManager(initialSettings.v2(),  null)
+//      manager.downloadAndExtract( "elasticsearch/elasticsearch-mapper-attachments/1.7.0",  true)
+//      println("plugin  installed")
+      builder.settings(settings)
     })
     clusterName.foreach(builder.clusterName(_))
 
     log.info("Created node client. connecting to cluster: " + clusterName)
     val node = builder.node()
+
     (node.client, node.close)
 
   }
