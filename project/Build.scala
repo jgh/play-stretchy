@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName         = "play-stretchy"
-  val appVersion      = "0.0.3-SNAPSHOT"
+  val appVersion      = "0.0.3"
 
 
   val appDependencies = Seq(
