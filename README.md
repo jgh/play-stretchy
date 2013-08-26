@@ -284,6 +284,8 @@ If you  need  to   install  plugins so  they are used by the  local  node.  What
 
 For an example see the attachments mapper plugin in the simple sample app.
 
+You also have to make  sure you  take ES plugins into account  when  staging  and  distributing your  application.
+
 ## Rest Interface
 
 When you start a node ES will automatically start the rest interface on port 9200 (9201 if 9200 is already in use).
