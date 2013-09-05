@@ -18,3 +18,4 @@ project/plugins/project/
 
 #es data
 samples/*/data
+samples/*/plugins
