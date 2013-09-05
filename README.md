@@ -19,13 +19,13 @@ goal is simply to make the API easier to use in a Play environment.
 #### In project/Build.scala
 
 ```
- val appDependencies = Seq(
- "play-stretchy" %% "play-stretchy" % "0.0.1"
- )
+  val appDependencies = Seq(
+    "play-stretchy" %% "play-stretchy" % "0.0.3"
+  )
 
- val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
- resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
- )
+  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
+    resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
+  )
 ```
 
 
@@ -45,19 +45,19 @@ This plugin reads properties from the `application.conf` and gives you easy acce
 
 ```
 elasticsearch = {
- client {
- node: {
- local:true
- data:true
- }
- }
- indices: [
- {
- name: stuff
- deleteIndex: true
- createIndex: true
- }
- ]
+  client {
+    node: {
+      local:true
+      data:true
+    }
+  }
+  indices: [
+  {
+    name: stuff
+    deleteIndex: true
+    createIndex: true
+  }
+  ]
 }
 ```
 This will create a new local node that holds data. It will also drop and recreate a 'stuff' index on startup/reload.
@@ -80,20 +80,20 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 object Application extends Controller {
 
- def index(q: Option[String]) = Action {
- val queryString = q.filterNot(_.trim.isEmpty)
- val searchResponse = ES.execute(client => {
- val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
- client.prepareSearch("stuff")
- .setQuery(query)
- .setSize(20)
- })
- Async {
- searchResponse.map(results => {
- Ok(views.html.index(queryString, results))
- })
- }
- }
+  def index(q: Option[String]) = Action {
+    val queryString = q.filterNot(_.trim.isEmpty)
+    val searchResponse = ES.execute(client => {
+      val query = queryString.map(f => QueryBuilders.queryString(f)).getOrElse(QueryBuilders.matchAllQuery())
+      client.prepareSearch("stuff")
+          .setQuery(query)
+          .setSize(20)
+    })
+    Async {
+      searchResponse.map(results => {
+        Ok(views.html.index(queryString, results))
+      })
+    }
+  }
 }
 ```
 
@@ -122,13 +122,13 @@ Call Json.toJson
 ```
 val searchResponse = ES.execute(client => {...})
 searchResponse.map(results => {
- val json = Json.toJson(results)
- val jsonTransformer = (__ \ 'facets \ "field-stats" \ "terms" ).json.pick
+  val json = Json.toJson(results)
+  val jsonTransformer = (__ \ 'facets \ "field-stats" \ "terms" ).json.pick
 
- json.transform(jsonTransformer).fold(
- valid = ( result => Ok(result) ),
- invalid = ( e => BadRequest(e.toString) )
- )
+  json.transform(jsonTransformer).fold(
+    valid = ( result => Ok(result) ),
+    invalid = ( e => BadRequest(e.toString) )
+  )
 })
 ```
 You now have a Play JSON object you can use with the JSON API or return as a result.
@@ -139,16 +139,16 @@ If you simply want to proxy the ES server and return the ES response as JSON the
 The following example uses Play content negotiation to return html or ES json based accept headers:
 ```
 ES.execute(_.prepareGet(indexName, type, id)).map(rs => {
- import stretchy.XContentWriteable._
- render {
-  case Accepts.Html() => {
-   Ok(views.html.index(rs)
+  import stretchy.XContentWriteable._
+  render {
+    case Accepts.Html() => {
+      Ok(views.html.index(rs)
+    }
+    case Accepts.Json() => {
+     //This return the ES JSON
+     Ok(rs)
+    }
   }
-  case Accepts.Json() => {
-   //This return the ES JSON
-   Ok(rs)
-  }
- }
 }
 ```
 ## View Helper
@@ -165,17 +165,17 @@ This is the easiest way to get started using ES. It can create a fully functioni
 
 ```
 elasticsearch = {
-
- client {
- clusterName: mycluster
- node: {
- local:true
- data:true
- settings: {
- test.prop: true
- }
- }
- },
+  client  {
+    clusterName: mycluster
+    node: {
+      local:true
+      data:true
+      settings: {
+        test.prop: true
+      }
+    }
+  }
+}
 ```
 * **clusterName** - Name of cluster. Defaults to 'elasticsearch'.
 * **local** - true means this node will be local to the Play JVM it will not attempt to join a cluster.
@@ -186,15 +186,15 @@ elasticsearch = {
 Transport Client will connect to a elastic search cluster running on other servers.
 ```
 elasticsearch = {
- client {
- clusterName: mycluster
- transport: {
- transportAddresses: ["jeremy-laptop:9300", "anotherserver:9300" ]
- settings: {
- test.prop: true
- }
- }
- },
+  client {
+    clusterName: mycluster
+    transport: {
+      transportAddresses: ["jeremy-laptop:9300", "anotherserver:9300" ]
+      settings: {
+      test.prop: true
+      }
+    }
+  },
 ```
 
 * **clusterName** - Name of cluster to connect to. Defaults to 'elasticsearch'.
@@ -210,22 +210,22 @@ Stretchy allows you to set up the indices and types directly in the Play config.
 Define the required indices as a json array under elasticsearch.
 ```
 elasticsearch = {
- client: {...},
- indices: [
- {
-  name: myindex
-  deleteIndex: true
-  createIndex: true
-  mappings: ${logEntryMappings}
+  client: {...},
+  indices: [
+  {
+    name: myindex
+    deleteIndex: true
+    createIndex: true
+    mappings: ${logEntryMappings}
 
- },
- {
-  name: myotherindex
-  deleteIndex: true
-  createIndex: true
-  mappings: ${logEntryMappings}
- }
- ]
+  },
+  {
+    name: myotherindex
+    deleteIndex: true
+    createIndex: true
+    mappings: ${logEntryMappings}
+  }
+  ]
 }
 ```
 * **name** - Name of the index.
@@ -241,35 +241,35 @@ See ES [mapping reference](http://www.elasticsearch.org/guide/reference/mapping/
 
 ```
 elasticsearch = {
- client {...}
- indices: [
- {
-  name: stuff
-  mappings {
-   "thing" : {
-   "properties" : {
-    "name" : {
-    "type" : "string",
-    },
-    "description" : {
-    "type" : "string",
+  client {...}
+  indices: [
+  {
+    name: stuff
+    mappings {
+      "thing" : {
+      "properties" : {
+        "name" : {
+        "type" : "string",
+        },
+        "description" : {
+        "type" : "string",
+        }
+      }
+      },
+      "anotherthing" : {
+      "properties" : {
+        "size" : {
+        "type" : "string",
+        },
+        "colour" : {
+        "type" : "string",
+        }
+      }
+      }
     }
-   }
-   },
-   "anotherthing" : {
-   "properties" : {
-    "size" : {
-    "type" : "string",
-    },
-    "colour" : {
-    "type" : "string",
-    }
-   }
-   }
-  }
- }]
-
+  }]
 }
+
 ```
 
 *Note* This could result in a error if ES is unable to merge the mapping with the mapping in the current index.
