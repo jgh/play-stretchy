@@ -131,6 +131,6 @@ object Global extends GlobalSettings {
 
   def index(value: Article)  = {
     println( Await.result(Application.indexArticle(value),
-      Duration.apply(1, TimeUnit.SECONDS)).getId)
+      Duration.apply(5, TimeUnit.SECONDS)).getId)
   }
 }
