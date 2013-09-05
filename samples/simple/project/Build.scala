@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
 
   val main = play.Project(appName, appVersion, appDependencies)
     .settings(
-      stretchy.SbtStretchyPlugin.plugins("elasticsearch/elasticsearch-mapper-attachments/1.7.0", "blah") : _*
+      stretchy.SbtStretchyPlugin.plugins("elasticsearch/elasticsearch-mapper-attachments/1.7.0") : _*
     )
 
 //  val main = play.Project(appName, appVersion, appDependencies)
