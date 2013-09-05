@@ -13,7 +13,7 @@
     }
     <form class="form-inline" action="@routes.Application.search(queryString)" method="get">
         <div class="input-append span12">
-        <input type="text" placeholder="search" class="span11" name="q" width="100%" height="45px"
+        <input type="text" placeholder="search (hint: try lorem)" class="span11" name="q" width="100%" height="45px"
                 value="@queryString.getOrElse("")" />
         <button type="submit" class="btn" ><i class="icon-search"></i></button>
         </div>
@@ -24,7 +24,7 @@
         <p>
            <span>Returning  @hits.searchResponse.getHits.hits.length of @hits.searchResponse.getHits.getTotalHits</span>
         </p>
-        <table class="table table-striped span12">
+        <table class="table table-striped span12" id="searchResults">
           <thead>
             <tr>
               <th>Title</th>
@@ -50,6 +50,15 @@
               }
           </tbody>
         </table>
+    <script>
+      $(function () {
+        $('#searchResults tbody tr').on('click', function(event) {
+         console.log("Clicked");
+         $(this).addClass('info').siblings().removeClass('info');
+        })
+      });
+
+    </script>
      }
    }
 }
