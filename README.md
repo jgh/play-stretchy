@@ -28,7 +28,6 @@ goal is simply to make the API easier to use in a Play environment.
   )
 ```
 
-
 ### Configure your application to use plugin
 
 #### add to your conf/play.plugins
