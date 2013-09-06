@@ -144,8 +144,8 @@ ES.execute(_.prepareGet(indexName, type, id)).map(rs => {
       Ok(views.html.index(rs)
     }
     case Accepts.Json() => {
-     //This return the ES JSON
-     Ok(rs)
+      //This returns the ES JSON
+      Ok(rs)
     }
   }
 }
