@@ -7,7 +7,7 @@ object ApplicationBuild extends Build {
   val appName         = "simple"
   val appVersion      = "0.0.1-SNAPSHOT"
   val appDependencies = Seq(
-    "play-stretchy" %% "play-stretchy" % "0.0.4-SNAPSHOT"
+    "play-stretchy" %% "play-stretchy" % "0.0.4"
   )
 
   val main = play.Project(appName, appVersion, appDependencies)

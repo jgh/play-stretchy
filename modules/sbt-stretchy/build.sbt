@@ -6,7 +6,7 @@ organization := "play-stretchy"
 
 libraryDependencies +=  "org.elasticsearch" % "elasticsearch" % "0.90.1"
 
-version := "0.0.4-SNAPSHOT"
+version := "0.0.4"
 
 //addSbtPlugin("play" % "sbt-plugin" % "2.1.1")
 
