@@ -332,9 +332,9 @@ This task  only  adds  the  plugins  to  an  existing  play dist  zip  so you ne
 ## Source control
 By  default the following directories  are used
 
-data
-plugins
-logs
+*  data
+*  plugins
+*  logs
 
 These should be added to your source control ignore list
 
