@@ -274,16 +274,62 @@ elasticsearch = {
 *Note* This could result in a error if ES is unable to merge the mapping with the mapping in the current index.
 
 ## ES  Plugins
-There is no  built  in  support for ES plugins  in a  local node.  Its  on the  the todo  list.
 
-If you  need  to   install  plugins so  they are used by the  local  node.  What  I have  done  is:
-* install a copy  of elastic  search
-* run  the plugin  command to install the  plugin into the installation.
-* Copy  the  plugin directory from the  root directory of the ES  installation  into the  root directory of the play app
+ES plugins are supported through a SBT plugin.
 
-For an example see the attachments mapper plugin in the simple sample app.
+in project/plugins.sbt add
+```
+resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
 
-You also have to make  sure you  take ES plugins into account  when  staging  and  distributing your  application.
+addSbtPlugin("play-stretchy" % "sbt-stretchy" % "0.0.4")
+```
+
+in the application build  file add  the plugins  to  be installed
+```
+val main = play.Project(appName, appVersion, appDependencies)
+  .settings(
+    stretchy.SbtStretchyPlugin.plugins("elasticsearch/elasticsearch-mapper-attachments/1.7.0") : _*
+  )
+```
+The strings  added  to this  setting  are the  same strings that  you would  pass  to the plugin script  when
+installing a plugin into a  ES installation.  E.g.
+```
+plugin --install <org>/<user/component>/<version>
+```
+See the Elastic Search [Plugins] (http://www.elasticsearch.org/guide/reference/modules/plugins/) for more info and a list
+of existing  plugins.
+
+To install the  plugins run
+```
+>install-es-plugins
+```
+By default this  will install into the  plugins  subdirectory of  the  application's base  directory.
+
+```
+
+To stage  the  plugins
+```
+>stage-es-plugins
+```
+This  task  will  copy the plugins  to  the  target  directory.
+
+To distribute  the  plugsins  with  the  dist zip.
+```
+>dist-es-plugins
+```
+This task  only  adds  the  plugins  to  an  existing  play dist  zip  so you need  to  run  dist  first.  e.g.
+```
+>;dist;dist-es-plugins
+```
+
+## Source control
+By  default the following directories  are used
+
+data
+plugins
+logs
+
+These should be added to your source control ignore list
 
 ## Rest Interface
 
