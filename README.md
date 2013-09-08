@@ -275,8 +275,12 @@ elasticsearch = {
 
 ## ES  Plugins
 
-ES plugins are supported through a SBT plugin.
+Installation  of  ES plugins is supported through a SBT plugin.
 
+> The scientist gave a superior smile before replying, "But how  do  I install that  plugin?"
+>  "You're very clever, young man, very clever," said the old lady. "But it's plugins all the way down!"
+
+arue
 in project/plugins.sbt add
 ```
 resolvers += Resolver.url("jgh GitHub Repository", url("http://jgh.github.com/releases/"))(Resolver.ivyStylePatterns)
