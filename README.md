@@ -299,6 +299,7 @@ plugin --install <org>/<user/component>/<version>
 See the Elastic Search [Plugins] (http://www.elasticsearch.org/guide/reference/modules/plugins/) for more info and a list
 of existing  plugins.
 
+###Install
 To install the  plugins run
 ```
 >install-es-plugins
@@ -307,12 +308,13 @@ By default this  will install into the  plugins  subdirectory of  the  applicati
 
 ```
 
+###Stage
 To stage  the  plugins
 ```
 >stage-es-plugins
 ```
 This  task  will  copy the plugins  to  the  target  directory.
-
+###Dist
 To distribute  the  plugsins  with  the  dist zip.
 ```
 >dist-es-plugins
