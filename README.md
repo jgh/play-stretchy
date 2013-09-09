@@ -28,7 +28,7 @@ goal is simply to make the API easier to use in a Play environment.
   )
 ```
 
-### Configure your application to use plugin
+### Configure your application to use the plugin
 
 #### add to your conf/play.plugins
 
@@ -97,10 +97,8 @@ object Application extends Controller {
 ```
 
 We using `ES.execute` to execute an action against ES. execute takes a Client => ActionRequestBuilder function. The client was configured
-in the application.conf. You use
-the client to prepare a ActionRequestBuilder. All actions you can perform against ES have a builder class that implements
-this interface. execute executes the action and returns a Future eventually containing the result.
-
+in the application.conf. You use the client to prepare a ActionRequestBuilder. All actions you can perform against ES have a builder class
+that implements this interface. execute executes the action and returns a Future eventually containing the result.
 
 Add to routes and we are done:
 ```
@@ -310,15 +308,18 @@ To install the  plugins run
 ```
 >install-es-plugins
 ```
-By default this  will install into the  plugins  subdirectory of  the  application's base  directory.
-
+By default this  will install into the  plugins  subdirectory of  the  application's base  directory.  Any plugin directories
+that are no  longer defined  in the build file  will be removed. To avoid having to download already installed plugins stretchy
+keeps track of the directories the plugins are installed into (in plugins/plugins.properties).
 
 ### Stage
 To stage  the  plugins
 ```
 >stage-es-plugins
 ```
-This  task  will  copy the plugins  to  the  target  directory.
+This  task  will  copy the plugins  to  the  target  directory. This should be run after the play stage task. The plugins will then be
+available when you run target/start.
+
 ### Dist
 To distribute  the  plugsins  with  the  dist zip.
 ```
@@ -327,6 +328,12 @@ To distribute  the  plugsins  with  the  dist zip.
 This task  only  adds  the  plugins  to  an  existing  play dist  zip  so you need  to  run  dist  first.  e.g.
 ```
 >;dist;dist-es-plugins
+```
+
+### Remove plugins
+To remove all plugins from the plugins directory
+```
+>remove-es-plugins
 ```
 
 ## Source control
