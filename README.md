@@ -20,7 +20,7 @@ goal is simply to make the API easier to use in a Play environment.
 
 ```
   val appDependencies = Seq(
-    "play-stretchy" %% "play-stretchy" % "0.0.3"
+    "play-stretchy" %% "play-stretchy" % "0.0.4"
   )
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
